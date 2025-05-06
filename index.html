@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacker Terminal</title>
+    <style>
+        body {
+            background-color: black;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            overflow: hidden;
+        }
+        .terminal {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            padding: 0;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        .line {
+            animation: scrollUp 10s linear infinite;
+            opacity: 0;
+            font-size: 3vw;
+            font-family: 'Lucida Console', Monaco, monospace;
+            /* font-weight: bold; */
+            letter-spacing: 0;
+            height: auto;
+            margin: 0;
+            padding: 0;
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            overflow: hidden;
+            position: absolute;
+            left: calc(var(--column) * 3vw);
+            width: auto;
+            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 15px #00ff77, 0 0 20px #00ff77;
+            transition: text-shadow 0.3s ease;
+        }
+        @keyframes scrollUp {
+            0% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+        }
+        @keyframes scrollDown {
+            0% {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal" id="terminal"></div>
+
+    <script>
+        const chars = "!\"#$%&()*+,-./0123456789<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]_abcdefghijklmnopqrstuvwxyz{|}~";
+        const terminal = document.getElementById('terminal');
+        const charWidth = 0.5; // 字符宽度(vw)
+        const maxColumns = Math.floor(window.innerWidth / (charWidth * 10)); // 最大列数
+        const activeColumns = new Set(); // 跟踪活跃列
+        
+        function generateRandomLine() {
+            let line = '';
+            const charCount = Math.floor(Math.random() * 5) + 10; // 生成3-7个字符
+            for(let i=0; i<charCount; i++) {
+                line += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return line;
+        }
+        
+        function createLine() {
+            // 找出可用的列
+            let availableColumns = [];
+            for(let i = 0; i < maxColumns; i++) {
+                if(!activeColumns.has(i)) {
+                    availableColumns.push(i);
+                }
+            }
+            
+            if(availableColumns.length === 0) return;
+            
+            const column = availableColumns[Math.floor(Math.random() * availableColumns.length)];
+            activeColumns.add(column);
+            
+            const line = document.createElement('div');
+            line.className = 'line';
+            line.textContent = generateRandomLine();
+            line.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            line.style.animationDelay = (Math.random() * 5) + 's';
+            line.style.animationName = Math.random() > 0.5 ? 'scrollUp' : 'scrollDown';
+            line.style.setProperty('--column', column);
+            
+            line.addEventListener('animationend', () => {
+                activeColumns.delete(column);
+            });
+            
+            terminal.appendChild(line);
+        }
+        
+        // Initial lines
+        for (let i = 0; i < Math.min(50, maxColumns); i++) {
+            createLine();
+        }
+        
+        // Add new lines periodically
+        setInterval(() => {
+            createLine();
+            // Clean up elements that are out of view
+            const lines = document.querySelectorAll('.line');
+            lines.forEach(line => {
+                const rect = line.getBoundingClientRect();
+                // 更严格的清理条件，确保完全离开屏幕的元素被移除
+                if(rect.bottom < -50 || rect.top > window.innerHeight + 50 || 
+                   rect.right < -50 || rect.left > window.innerWidth + 50) {
+                    line.remove();
+                }
+            });
+        }, 100);
+    </script>
+</body>
+</html>
