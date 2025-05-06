@@ -8,38 +8,32 @@ class Node<T> {
     }
 }
 
-
 @SpringBootApplication
 @RestController
 public class DemoApplication {
     public static void main(String[] args) {
         SpringApplication.run(DemoApplication.class, args);
     }
-
     @GetMapping("/hello")
     public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
         return String.format("Hello %s!", name);
     }
 }
 
-
 class ThreadSafeCounter {
     private int count = 0;
     private final Object lock = new Object();
-
     public void increment() {
         synchronized(lock) {
             count++;
         }
     }
-
     public int getCount() {
         synchronized(lock) {
             return count;
         }
     }
 }
-
 class LinkedList<T> {
     private Node<T> head;
     private Node<T> tail;
@@ -123,7 +117,6 @@ class LinkedList<T> {
     }
 }
 
-
 class Sorting {
     public static void bubbleSort(int[] arr) {
         int n = arr.length;
@@ -155,10 +148,8 @@ class Sorting {
     }
 }
 
-
 import java.io.*;
 import java.nio.file.*;
-
 class FileUtils {
     public static String readFile(String filename) throws IOException {
         return new String(Files.readAllBytes(Paths.get(filename)));
@@ -169,10 +160,8 @@ class FileUtils {
     }
 }
 
-
 import java.net.*;
 import java.io.*;
-
 class HttpClient {
     public static String get(String url) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
@@ -192,9 +181,7 @@ class HttpClient {
     }
 }
 
-
 import java.sql.*;
-
 class Database {
     private Connection connection;
     
@@ -342,7 +329,6 @@ class Database {
         }
     }
 }
-
 // Multithreading
 class Worker implements Runnable {
     private String name;
@@ -362,7 +348,6 @@ class Worker implements Runnable {
         System.out.println(name + " finished");
     }
 }
-
 // Thread Pool Example
 class ThreadPool {
     private final BlockingQueue<Runnable> taskQueue;
@@ -397,7 +382,6 @@ class ThreadPool {
         }
     }
 }
-
 class WorkerThread extends Thread {
     private final BlockingQueue<Runnable> taskQueue;
     private volatile boolean isStopped;
@@ -423,18 +407,15 @@ class WorkerThread extends Thread {
         this.interrupt();
     }
 }
-
 // Observer Pattern
 interface Subject {
     void registerObserver(Observer o);
     void removeObserver(Observer o);
     void notifyObservers();
 }
-
 interface Observer {
     void update(float temp, float humidity, float pressure);
 }
-
 class WeatherData implements Subject {
     private List<Observer> observers;
     private float temperature;
@@ -470,7 +451,6 @@ class WeatherData implements Subject {
         measurementsChanged();
     }
 }
-
 class CurrentConditionsDisplay implements Observer {
     private float temperature;
     private float humidity;
@@ -492,7 +472,6 @@ class CurrentConditionsDisplay implements Observer {
             + "F degrees and " + humidity + "% humidity");
     }
 }
-
 // Red-Black Tree
 class RedBlackTree<K extends Comparable<K>, V> {
     private static final boolean RED = true;
@@ -573,11 +552,9 @@ class RedBlackTree<K extends Comparable<K>, V> {
         return null;
     }
 }
-
 // Testing
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
-
 class LinkedListTest {
     private LinkedList<String> list;
     
@@ -594,25 +571,21 @@ class LinkedListTest {
     }
     
     @Test
-
 // Spring Framework Example
 @RestController
 @RequestMapping("/api")
 public class UserController {
     @Autowired
     private UserRepository userRepository;
-
     @GetMapping("/users")
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-
     @PostMapping("/users")
     public User createUser(@RequestBody User user) {
         return userRepository.save(user);
     }
 }
-
 // Spring Cloud Config Example
 @Configuration
 @EnableConfigServer
@@ -621,7 +594,6 @@ public class ConfigServerApplication {
         SpringApplication.run(ConfigServerApplication.class, args);
     }
 }
-
 // Spring Cloud Gateway Example
 @Bean
 public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
@@ -630,18 +602,15 @@ public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
             .uri("http://httpbin.org"))
         .build();
 }
-
 // Spring Cloud Stream Example
 @EnableBinding(Source.class)
 public class MessageProducer {
     @Autowired
     private Source source;
-
     public void sendMessage(String message) {
         source.output().send(MessageBuilder.withPayload(message).build());
     }
 }
-
 // Spring Batch Example
 @Configuration
 @EnableBatchProcessing
@@ -655,7 +624,6 @@ public class BatchConfig {
             .build();
     }
 }
-
 // Spring Security Example
 @Configuration
 @EnableWebSecurity
@@ -675,20 +643,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
     }
 }
-
 // Spring Data REST Example
 @RepositoryRestResource(collectionResourceRel = "people", path = "people")
 public interface PersonRepository extends PagingAndSortingRepository<Person, Long> {
     List<Person> findByLastName(@Param("name") String name);
 }
-
 // Spring Integration Example
 @MessagingGateway
 public interface MessageGateway {
     @Gateway(requestChannel = "inputChannel")
     void sendMessage(String message);
 }
-
 // Spring Actuator Example
 @Configuration
 @Endpoint(id = "custom")
@@ -698,7 +663,6 @@ public class CustomEndpoint {
         return "Custom Endpoint";
     }
 }
-
 // Spring Test Example
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -707,7 +671,6 @@ public class ApplicationTests {
     public void contextLoads() {
     }
 }
-
 // Microservice Example
 @SpringBootApplication
 @EnableDiscoveryClient
@@ -715,32 +678,27 @@ public class ProductServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(ProductServiceApplication.class, args);
     }
-
     @Bean
     @LoadBalanced
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
 }
-
 // Concurrent Programming
 class ThreadSafeCounter {
     private int count = 0;
     private final Object lock = new Object();
-
     public void increment() {
         synchronized(lock) {
             count++;
         }
     }
-
     public int getCount() {
         synchronized(lock) {
             return count;
         }
     }
 }
-
 @Test
     void testPrepend() {
         list.prepend("A");
@@ -748,7 +706,6 @@ class ThreadSafeCounter {
         assertEquals("A -> null", list.toString());
     }
 }
-
 // Main Class
 public class Main {
     public static void main(String[] args) {
@@ -791,7 +748,6 @@ public class Main {
         System.out.println("Optimized operation took " + duration + " ns");
     }
 }
-
 // Additional Spring Boot Components
 @Configuration
 @EnableCaching
@@ -801,7 +757,6 @@ class CacheConfig {
         return new ConcurrentMapCacheManager("products");
     }
 }
-
 // Advanced Concurrency Patterns
 class ReadWriteLockExample {
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
@@ -825,7 +780,6 @@ class ReadWriteLockExample {
         }
     }
 }
-
 // Reactive Programming Example
 @RestController
 class ReactiveController {
@@ -834,7 +788,6 @@ class ReactiveController {
         return Mono.just("Reactive Response");
     }
 }
-
 // Distributed Tracing Example
 @Configuration
 class TracingConfig {
@@ -843,7 +796,6 @@ class TracingConfig {
         return new OpenTelemetryTracer();
     }
 }
-
 // Circuit Breaker Pattern
 @RestController
 class ResilientController {
