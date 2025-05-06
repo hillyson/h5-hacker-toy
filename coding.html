@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Display</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+            overflow: hidden;
+            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff77;
+            transition: text-shadow 0.3s ease;
+        }
+        #code-display {
+            height: 100vh;
+            overflow-y: auto;
+            white-space: pre;
+            line-height: 1.5;
+            background: #0a0a0a;
+            padding: 160px 20px 80px 20px;
+            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff77;
+            transition: text-shadow 0.3s ease;
+        }
+        #code-display code {
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff77;
+            transition: text-shadow 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div id="code-display"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script>
+        // Wait for Prism core to load
+        document.addEventListener('DOMContentLoaded', function() {
+            // First ensure Prism is loaded
+            if (typeof Prism === 'undefined') {
+                console.error('Prism core not loaded');
+                return;
+            }
+            
+            // Load language components in parallel
+            const languages = [
+                'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js'
+            ];
+            
+            let loadedCount = 0;
+            
+            languages.forEach(url => {
+                const script = document.createElement('script');
+                script.src = url;
+                script.onload = function() {
+                    loadedCount++;
+                    if (loadedCount === languages.length) {
+                        // All languages loaded, now load autoloader
+                        const autoloader = document.createElement('script');
+                        autoloader.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js';
+                        document.body.appendChild(autoloader);
+                    }
+                };
+                script.onerror = function() {
+                    console.error('Failed to load language:', url);
+                    loadedCount++;
+                };
+                document.body.appendChild(script);
+            });
+        });
+    </script>
+    <script>
+        // Code files list
+        const codeFiles = [
+            'python_example.py',
+            'javascript_example.js',
+            'java_example.java',
+            'cpp_example.cpp'
+        ];
+
+        const codeDisplay = document.getElementById('code-display');
+        
+        // Track current file and position
+        let currentFileIndex = 0;
+        let currentFileContent = '';
+        let currentPosition = 0;
+        
+        // Load initial file
+        function loadNextFile() {
+            currentFileIndex = Math.floor(Math.random() * codeFiles.length);
+            currentPosition = 0;
+            
+            fetch(codeFiles[currentFileIndex])
+                .then(response => response.text())
+                .then(code => {
+                    currentFileContent = code;
+                    codeDisplay.innerHTML = '';
+                })
+                .catch(error => {
+                    console.error('Failed to load code file:', error);
+                    codeDisplay.textContent = 'Failed to load code file: ' + error;
+                });
+        }
+        
+        // Load first file
+        loadNextFile();
+        
+        // Listen to keyboard events
+        document.addEventListener('keydown', (event) => {
+            if (currentPosition >= currentFileContent.length) {
+                // Current file finished, load next one
+                loadNextFile();
+                return;
+            }
+            
+            // Get random chunk size (5-10 characters)
+            const chunkSize = Math.min(5 + Math.floor(Math.random() * 6), 
+                                     currentFileContent.length - currentPosition);
+            
+            // Output next chunk of characters with HTML escaping
+            const chunk = currentFileContent.substring(
+                currentPosition, currentPosition + chunkSize);
+            codeDisplay.innerHTML += chunk
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            currentPosition += chunkSize;
+            
+            // Auto scroll to bottom
+            requestAnimationFrame(() => {
+                codeDisplay.scrollTop = codeDisplay.scrollHeight;
+            });
+        });
+    </script>
+</body>
+</html>
